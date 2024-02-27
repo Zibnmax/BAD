@@ -1,8 +1,7 @@
 from datetime import datetime
-import sys
+
 
 NUMBERS_FILE_DEFAULT_PATH = '10m.txt'
-
 
 def time_measure(func):
     """Time measure decorator
