@@ -63,11 +63,11 @@ class StatisticSolver:
         """
         return min(self.list_of_numbers)
     
-    def median(self) -> int|float:
+    def median(self) -> int | float:
         """Finds median value of all numbers in file.
 
         Returns:
-            int|float: median
+            int | float: median
         """
         list_of_numbers_len = len(self.list_of_numbers)
         sorted_list = sorted(self.list_of_numbers)
@@ -112,8 +112,8 @@ class StatisticSolver:
         Returns:
             list[int]: chain of numbers in descending order
         """
-        longest_list = []
-        current_list = []
+        longest_list: list[int] = []
+        current_list: list[int] = []
         for number in self.list_of_numbers:
             if not current_list:
                 current_list.append(number)
