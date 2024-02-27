@@ -40,10 +40,40 @@ class MathSolver:
         return (sum(self.list_of_numbers) / len(self.list_of_numbers))
     
     def ascend(self):
-        pass
+        longest_list = []
+        current_list = []
+        for number in self.list_of_numbers:
+            if not current_list:
+                current_list.append(number)
+                continue
+            if number > current_list[-1]:
+                current_list.append(number)
+            else:
+                if len(current_list) > len(longest_list):
+                    longest_list = current_list.copy()
+                current_list = [number]
+        
+        if len(current_list) > len(longest_list):
+            longest_list = current_list.copy()
+        return longest_list
     
     def descend(self):
-        pass
+        longest_list = []
+        current_list = []
+        for number in self.list_of_numbers:
+            if not current_list:
+                current_list.append(number)
+                continue
+            if number < current_list[-1]:
+                current_list.append(number)
+            else:
+                if len(current_list) > len(longest_list):
+                    longest_list = current_list.copy()
+                current_list = [number]
+        
+        if len(current_list) > len(longest_list):
+            longest_list = current_list.copy()
+        return longest_list
 
 
 
@@ -61,4 +91,10 @@ if __name__ == '__main__':
     print(ms.find_average())
     r4 = datetime.now()
     print("average", r4 - r3)
-
+    print(ms.ascend())
+    r5 = datetime.now()
+    print("ascend", r5 - r4)
+    print(ms.descend())
+    r6 = datetime.now()
+    print("descend", r6 - r5)
+    print("overall time", datetime.now() - start)
