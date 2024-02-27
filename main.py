@@ -1,15 +1,30 @@
 from datetime import datetime
 import sys
 
-NUMBERS_FILE_PATH = '10m.txt'
+NUMBERS_FILE_DEFAULT_PATH = '10m.txt'
 
-class MathSolver:
-    
-    def __init__(self, file_path: str = NUMBERS_FILE_PATH) -> None:
-        self.file_path: str = file_path
+
+def time_measure(func):
+    """Time measure decorator
+    """
+    def wrapper(*args, **kwargs):
+        start_time = datetime.now()
+        result = func(*args, **kwargs)
+        end_time = datetime.now()
+        print(f'Elapsed time of function "{func.__name__}": {end_time - start_time}')
+        return result
+    return wrapper
+
+class StatisticSolver:
+    """Statistics calculating class. Requires '.txt' filename which contains INT numbers only (every number must be on a new line).
+    """
+    def __init__(self) -> None:
         self.list_of_numbers: list = []
+        self.file_path: str = input(f'Enter file name to proceed or leave empty field to use default file name "{NUMBERS_FILE_DEFAULT_PATH}":\n')
+        if not self.file_path:
+            self.file_path = NUMBERS_FILE_DEFAULT_PATH
         try:
-            with open(file=file_path, mode='r') as file:
+            with open(file=self.file_path, mode='r') as file:
                 for line_count, line in enumerate(file):
                     try:
                         self.list_of_numbers.append(int(line))
@@ -21,27 +36,61 @@ class MathSolver:
                         break
         except FileNotFoundError:
             print('File not found.')
-            sys.exit(1)
+            raise
+        except OSError:
+            print('File is not reachable.')
+            raise
+        except Exception:
+            raise("Something went wrong. Breaking now.")
+        
+        if not self.list_of_numbers:
+            raise ValueError('File have no numbers to work with.')
             
     
-    def find_min_max(self) -> tuple:
-        min_ = min(self.list_of_numbers)
-        max_ = max(self.list_of_numbers)
-        return min_, max_
+    def max(self) -> int:
+        """Finds max value in file.
+
+        Returns:
+            int: max value
+        """
+        return max(self.list_of_numbers)
     
-    def find_median(self) -> int|float:
+    def min(self) -> int:
+        """Finds min value in file.
+
+        Returns:
+            int: mmin value
+        """
+        return min(self.list_of_numbers)
+    
+    def median(self) -> int|float:
+        """Finds median value of all numbers in file.
+
+        Returns:
+            int|float: median
+        """
         list_of_numbers_len = len(self.list_of_numbers)
         sorted_list = sorted(self.list_of_numbers)
         if list_of_numbers_len % 2 == 0:
             return (sorted_list[list_of_numbers_len // 2] + sorted_list[list_of_numbers_len // 2 - 1]) / 2
         return (sorted_list[list_of_numbers_len // 2])
     
-    def find_average(self) -> float:
+    def average(self) -> float:
+        """Finds arithmetical average value of all numbers in file.
+
+        Returns:
+            float: arithmetical average
+        """
         return (sum(self.list_of_numbers) / len(self.list_of_numbers))
     
-    def ascend(self):
-        longest_list = []
-        current_list = []
+    def ascend(self) -> list[int]:
+        """Finds the longest chain of numbers in ascending order.
+
+        Returns:
+            list[int]: chain of numbers in ascending order
+        """
+        longest_list: list[int] = []
+        current_list: list[int] = []
         for number in self.list_of_numbers:
             if not current_list:
                 current_list.append(number)
@@ -57,7 +106,12 @@ class MathSolver:
             longest_list = current_list.copy()
         return longest_list
     
-    def descend(self):
+    def descend(self) -> list[int]:
+        """Finds the longest chain of numbers in descending order.
+
+        Returns:
+            list[int]: chain of numbers in descending order
+        """
         longest_list = []
         current_list = []
         for number in self.list_of_numbers:
@@ -75,26 +129,15 @@ class MathSolver:
             longest_list = current_list.copy()
         return longest_list
 
-
+@time_measure
+def main() -> None:
+    nums = StatisticSolver()
+    print(f'Max value: {nums.max()}')
+    print(f'Min value: {nums.min()}')
+    print(f'Median value: {nums.median()}')
+    print(f'Average value: {nums.average()}')
+    print(f'Longest ascend chain: {nums.ascend()}')
+    print(f'Longest descend chain: {nums.descend()}')
 
 if __name__ == '__main__':
-    start = datetime.now()
-    ms = MathSolver()
-    r1 = datetime.now()
-    print("file open", r1 - start)
-    print(ms.find_min_max())
-    r2 = datetime.now()
-    print("min max", r2 - r1)
-    print(ms.find_median())
-    r3 = datetime.now()
-    print("median", r3 - r2)
-    print(ms.find_average())
-    r4 = datetime.now()
-    print("average", r4 - r3)
-    print(ms.ascend())
-    r5 = datetime.now()
-    print("ascend", r5 - r4)
-    print(ms.descend())
-    r6 = datetime.now()
-    print("descend", r6 - r5)
-    print("overall time", datetime.now() - start)
+    main()
